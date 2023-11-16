@@ -27,7 +27,7 @@ public class EnemyController : MonoBehaviour {
         UnityEditor.SceneManagement.PrefabStage prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
         bool isValidPrefabStage = prefabStage != null && prefabStage.stageHandle.IsValid();
         bool prefabConnected = PrefabUtility.GetPrefabInstanceStatus(this.gameObject) == PrefabInstanceStatus.Connected;
-        if (!isValidPrefabStage && prefabConnected) {
+        if (!isValidPrefabStage/* && prefabConnected*/) {
             // Variables that will only be checked when they are in a scene
             if (!Application.isPlaying)
                 // Assing the waypoints on the inspector.
@@ -49,10 +49,12 @@ public class EnemyController : MonoBehaviour {
 
     [field: SerializeField] private float patrolSpeedModifier = 0f;
     public float PatrolSpeedModifier { get { return patrolSpeedModifier; } }
+    [field: SerializeField] private bool stopInEachWaypoint;
+    public bool StopInEachWaypoint { get { return stopInEachWaypoint; } }
 
 
     private int _currentWaypointIndex = 0;
-    public int CurrentWaypointIndex { get { return _currentWaypointIndex; } set { _currentWaypointIndex = value; } }
+    public int TargetWaypointIndex { get { return _currentWaypointIndex; } set { _currentWaypointIndex = value; } }
     private bool _invertPatrol;  // If the enemy is going to the next waypoint or to the previous one.
     public bool InvertPatrol { get { return _invertPatrol; } set { _invertPatrol = value; } }
 
@@ -75,10 +77,10 @@ public class EnemyController : MonoBehaviour {
 
         _agent.autoBraking = false;  // Disable the speed reduction when the agent is close to the destination.
 
-        currentState = new EnemyIdle(gameObject, this, _agent/*, enemies.player*/);
+        currentState = new EnemyIdle(gameObject, this, _agent, enemies.player);
     }
 
     void Update() {
-        
+        currentState = currentState.Process();
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
@@ -41,19 +42,28 @@ public class EnemyPatrol : EnemyState {
                 return;
             }
             else {
-                // When we reach at the last or first waypoint, we will change to idle state.
-                if (_lastWaypointIndex == enemy.Waypoints.Count - 1 || _lastWaypointIndex == 0) {
-                    nextState = new EnemyIdle(npc, enemy, agent, player);
-
-                    //Debug.Log($"Enemy {enemy.name} has reached to first or last waypoint. Changing to idle state.");
-                    Debug.Log($"Target: {_lastWaypointIndex} and Count: {enemy.Waypoints.Count}");
-
-                    stage = STAGES.Exit;
+                if (enemy.StopInEachWaypoint) {
+                    ExitToIdle();
                     return;
                 }
-                else
-                    GotoNextPoint();
-
+                else if (enemy.WaypointsToStop != null && enemy.WaypointsToStop.Length > 0) {
+                    // When we reach at specific waypoint, we will change to idle state.
+                    if (Array.Exists(enemy.WaypointsToStop, element => element == _lastWaypointIndex + 1)) {
+                        ExitToIdle();
+                        return;
+                    }
+                    else
+                        GotoNextPoint();
+                }
+                else {
+                    // When we reach at the last or first waypoint, we will change to idle state.
+                    if (_lastWaypointIndex == enemy.Waypoints.Count - 1 || _lastWaypointIndex == 0) {
+                        ExitToIdle();
+                        return;
+                    }
+                    else
+                        GotoNextPoint();
+                }
             }
         }
 
@@ -98,5 +108,14 @@ public class EnemyPatrol : EnemyState {
         else
             // Invert the direction if we've reached the end of the path
             enemy.TargetWaypointIndex = (enemy.TargetWaypointIndex - 1) % enemy.Waypoints.Count;
+    }
+
+    void ExitToIdle() {
+        nextState = new EnemyIdle(npc, enemy, agent, player);
+
+        //Debug.Log($"Enemy {enemy.name} has reached to first or last waypoint. Changing to idle state.");
+        //Debug.Log($"Target: {_lastWaypointIndex} and Count: {enemy.Waypoints.Count}");
+
+        stage = STAGES.Exit;
     }
 }

@@ -7,52 +7,134 @@ using UnityEngine.UIElements;
 
 public class PlayerMovement_2 : MonoBehaviour {
 
-    [field: Header("Autoattach Inspector Properties")]
-    [field: SerializeField, GetComponent, ReadOnlyField] private Rigidbody _rigidbody { get; set; }
+    [field: Header("- Autoattach propierties -")]
+    [field: SerializeField, GetComponent, ReadOnlyField] private Rigidbody rb { get; set; }
 
-    [field: Header("Movement Properties")]
-    [field: SerializeField] private float _moveSpeed { get; set; } = 10.0f;
-    [field: SerializeField] private float _turnSpeed { get; set; } = 100.0f;
+    [field: Header("Movement settings")]
+    [field: SerializeField] private float moveSpeed { get; set; } = 6f;
+    [field: SerializeField] private float movementMultiplier { get; set; } = 10f;
+    [field: SerializeField, ReadOnlyField] private bool isSneaking { get; set; }
 
-    [field: Header("Camera Properties")]
-    [field: SerializeField] private Transform _camera { get; set; }
+    [field: Header("Camara settings")]
+    [field: Range(1, 10)]
+    [field: SerializeField] private float mouseSensitivity { get; set; } = 3;
+    [field: SerializeField] private Transform followTransform { get; set; }
 
-    private Vector3 _moveInput { get; set; }
-    private Vector2 _movementInput { get; set; }
-    private float _turnInput { get; set; }
+    // Opciones para invertir el giro de la cmara.
+    [field: SerializeField] private bool invertX;
+    [field: SerializeField] private bool invertY;
+
+    private float horizontalMovement { get; set; }
+    private float verticalMovement { get; set; }
+
+    private float rbDrag { get; set; } = 6f;
+
+    private Vector3 moveDirection { get; set; }
+    private Vector2 mouseInput;
 
     void Start() {
-        
+        if (rb == null)
+            rb = GetComponent<Rigidbody>();
+
+        rb.freezeRotation = true;
+    }
+
+    void Update() {
+        ControlDrag();
     }
 
     void FixedUpdate() {
-        Movement();
-    }
-
-    void Movement() {
-        // Update movement input.
-        _moveInput = new Vector3(_movementInput.x, 0, _movementInput.y) * _moveSpeed;
-
-        // Update rotation input.
-        _turnInput = Input.GetAxis("Mouse X") * _turnSpeed;
-
-        // Apply rotation to movement input.
-        _moveInput = _camera.InverseTransformDirection(_moveInput);
-
-        // Apply movement.
-        _rigidbody.AddForce(_moveInput);
-
-        // Apply rotation.
-        transform.Rotate(Vector3.up, _turnInput * Time.deltaTime);
-
-        // Update camera.
-        _camera.LookAt(transform);
+        MovePlayer();
+        Rotation();
     }
 
     /// <summary>
     /// Called when the player presses the movement keys.
     /// </summary>
     void OnMovement(InputValue value) {
-        _movementInput = value.Get<Vector2>();
+        Vector2 inputVector = value.Get<Vector2>();
+        horizontalMovement = inputVector.x;
+        verticalMovement = inputVector.y;
+    }
+
+    void OnCameraMovement(InputValue value) {
+        mouseInput = value.Get<Vector2>();
+    }
+
+    void OnSneakMovement(InputValue value) {
+        isSneaking = value.isPressed;
+    }
+
+    void MovePlayer() {
+
+        moveDirection = transform.forward * verticalMovement + transform.right * horizontalMovement;
+
+        float currentMoveSpeed = moveSpeed;
+
+        if (isSneaking)
+            currentMoveSpeed /= 2;
+
+        rb.AddForce(moveDirection.normalized * currentMoveSpeed * movementMultiplier, ForceMode.Acceleration);
+    }
+
+    void Rotation() {
+        // Aqui se modifica el movimiento sobre los ejes segn los gustos del jugador.
+        if (invertX) {
+            mouseInput.x = -mouseInput.x;
+        }
+        if (invertY) {
+            mouseInput.y = -mouseInput.y;
+        }
+
+        // Player rotation
+        //transform.rotation *= Quaternion.AngleAxis(mouseInput.x * mouseSensitivity, Vector3.up);
+
+        // Rotamos al personaje segn gira el ratn.
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x * mouseSensitivity,
+        transform.rotation.eulerAngles.z);
+
+        // Camera vertical rotation
+        followTransform.rotation *= Quaternion.AngleAxis(mouseInput.y * mouseSensitivity, Vector3.right);
+
+        Vector3 angles = followTransform.localEulerAngles;
+        angles.z = 0;
+
+        float angle = followTransform.localEulerAngles.x;
+
+        // Clamp the Up/Down rotation
+        if (angle > 180 && angle < 340) {
+            angles.x = 340;
+        } else if (angle < 180 && angle > 40) {
+            angles.x = 40;
+        }
+
+        // Set the player's rotation based on the look transform
+        //transform.rotation *= Quaternion.Euler(0, followTransform.eulerAngles.y, 0);
+        // Reset the y rotation of the look transform
+        followTransform.localEulerAngles = new Vector3(angles.x, 0, 0);
+    }
+
+    /*void CameraRotation() {
+
+        // Aqui se modifica el movimiento sobre los ejes segn los gustos del jugador.
+        if (invertX) {
+            mouseInput.x = -mouseInput.x;
+        }
+        if (invertY) {
+            mouseInput.y = -mouseInput.y;
+        }
+
+        // Rotamos al personaje segn gira el ratn.
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x * mouseSensitivity,
+        transform.rotation.eulerAngles.z);
+
+        // Rotamos la cmara segn gira el ratn. El Mathf.Clamp se usa para ajustar un lmite de movimiento en el eje X de la rotacin de la cmara.
+        followTransform.rotation = Quaternion.Euler(Mathf.Clamp(followTransform.rotation.eulerAngles.x + (mouseInput.y), 0f, 40f),
+            followTransform.rotation.eulerAngles.y, followTransform.rotation.eulerAngles.z);
+
+    }*/
+
+    void ControlDrag() {
+        rb.drag = rbDrag;
     }
 }

@@ -15,7 +15,7 @@ public class EnemyController : MonoBehaviour {
     public CapsuleCollider CapsuleCollider { get { return _capsuleCollider; } }
 
 
-    [field: Header("Other Editor properties")]
+    [field: Header("Waypoints Editor properties")]
     [field: SerializeField, Tooltip("Parent of the empty objects to use as waypoints.")
         ]
     private Transform waypointsParent { get; set; }
@@ -27,7 +27,7 @@ public class EnemyController : MonoBehaviour {
         UnityEditor.SceneManagement.PrefabStage prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
         bool isValidPrefabStage = prefabStage != null && prefabStage.stageHandle.IsValid();
         bool prefabConnected = PrefabUtility.GetPrefabInstanceStatus(this.gameObject) == PrefabInstanceStatus.Connected;
-        if (!isValidPrefabStage/* && prefabConnected*/) {
+        if (!isValidPrefabStage && prefabConnected) {
             // Variables that will only be checked when they are in a scene
             if (!Application.isPlaying)
                 // Assing the waypoints on the inspector.
@@ -52,6 +52,9 @@ public class EnemyController : MonoBehaviour {
     [field: SerializeField] private bool stopInEachWaypoint;
     public bool StopInEachWaypoint { get { return stopInEachWaypoint; } }
 
+    [field: SerializeField] private int[] waypointsToStop;
+    public int[] WaypointsToStop { get { return waypointsToStop; } }
+
 
     private int _currentWaypointIndex = 0;
     public int TargetWaypointIndex { get { return _currentWaypointIndex; } set { _currentWaypointIndex = value; } }
@@ -72,6 +75,17 @@ public class EnemyController : MonoBehaviour {
     public int CurrentLookingWaypoint { get { return currentLookingWaypoint; } set { currentLookingWaypoint = value; } }
 
     private EnemyState currentState { get; set; }
+
+    [field: Header("Aditional Detection properties")]
+    [field: SerializeField] private bool detectPlayerBySound;
+    public bool DetectPlayerBySound { get { return detectPlayerBySound; } }
+    [field: SerializeField] private float soundDetectionRadius;
+    public float SoundDetectionRadius { get { return soundDetectionRadius; } }
+
+    [field: SerializeField] private bool detectPlayerByProximity;
+    public bool DetectPlayerByProximity { get { return detectPlayerByProximity; } }
+    [field: SerializeField] private float proximityDetectionRadius;
+    public float ProximityDetectionRadius { get { return proximityDetectionRadius; } }
 
     void Start() {
 

@@ -9,10 +9,18 @@ public class EnemyManager : MonoBehaviour {
 
     [field: Header("AutoAttach on Editor properties")]
     [field: SerializeField, FindObjectOfType, ReadOnlyField] public PlayerManager player { get; private set; }
+    [field: SerializeField, FindObjectOfType, ReadOnlyField] private LevelManager levelManager { get; set; }
 
     // Used for alert to others enemies.
     [field: SerializeField, ReadOnlyField] private bool _playerDetected { get; set; }
-    public bool PlayerDetected { get { return _playerDetected; } set { _playerDetected = value; } }
+    public bool PlayerDetected { get { return _playerDetected; } 
+        set { 
+            _playerDetected = value; 
+
+            if (value)
+                levelManager.EndGame();
+        } 
+    }
 
     // This is used to store the Waypoint objects in the scene to create a list with just the Transform component.
     [field: SerializeField, ReadOnlyField] public List<Transform> allWaypoints { get; private set; } = new List<Transform>();
@@ -32,13 +40,5 @@ public class EnemyManager : MonoBehaviour {
         // Get all the waypoints in the scene in a simplified way.
         if (allWaypoints.Count == 0)
             allWaypoints = GameObject.FindGameObjectsWithTag("enemyWaypoint").Select(x => x.transform).ToList();
-    }
-
-    void Start() {
-        
-    }
-
-    void Update() {
-        
     }
 }

@@ -230,8 +230,27 @@ public class VisionCone : MonoBehaviour {
     }
 
     private void OnTriggerStay(Collider other) {
-        if (!enabled)
-            return;
+        if (other.GetType() != typeof(SphereCollider)) {
+            // This Ifs can be checked with the script disabled.
+            if (enemyController.DetectPlayerBySound && !enemies.player.IsSneaking) {
+                if (other.CompareTag("Player")) {
+                    if (Vector3.Distance(transform.position, enemies.player.transform.position) <= enemyController.SoundDetectionRadius) {
+                        PlayerDetection(true);
+                    }
+                }
+            }
+
+            if (enemyController.DetectPlayerByProximity) {
+                if (other.CompareTag("Player")) {
+                    if (Vector3.Distance(transform.position, enemies.player.transform.position) <= enemyController.ProximityDetectionRadius) {
+                        PlayerDetection(true);
+                    }
+                }
+            }
+
+            if (!enabled)
+                return;
+        }
 
         if (other.GetType() != typeof(SphereCollider)) {    // Ignore all SphereColliders.
             if (other.gameObject != gameObject || !other.transform.IsChildOf(transform)) { // Ignore itself.
@@ -253,22 +272,6 @@ public class VisionCone : MonoBehaviour {
                         }
                         //Debug.DrawRay(transform.position, direction.normalized * _viewRadius, Color.red);
                         //Debug.Log($"Other = {other.name}");
-                    }
-                }
-
-                if (enemyController.DetectPlayerBySound) {
-                    if (other.CompareTag("Player")) {
-                        if (Vector3.Distance(transform.position, enemies.player.transform.position) <= enemyController.SoundDetectionRadius) {
-                            PlayerDetection(true);
-                        }
-                    }
-                }
-
-                if (enemyController.DetectPlayerByProximity) {
-                    if (other.CompareTag("Player")) {
-                        if (Vector3.Distance(transform.position, enemies.player.transform.position) <= enemyController.ProximityDetectionRadius) {
-                            PlayerDetection(true);
-                        }
                     }
                 }
             }

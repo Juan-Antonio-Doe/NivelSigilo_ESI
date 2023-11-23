@@ -8,7 +8,7 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour {
 
     [field: Header("AutoAttach on Editor properties")]
-    [field: SerializeField, FindObjectOfType, ReadOnlyField] public PlayerManager player { get; private set; }
+    [field: SerializeField, FindObjectOfType, ReadOnlyField] public PlayerMovement_2 player { get; private set; }
     [field: SerializeField, FindObjectOfType, ReadOnlyField] private LevelManager levelManager { get; set; }
 
     // Used for alert to others enemies.

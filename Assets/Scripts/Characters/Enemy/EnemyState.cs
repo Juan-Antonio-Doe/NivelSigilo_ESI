@@ -23,11 +23,11 @@ public class EnemyState {
     protected STAGES stage { get; set; }
     protected GameObject npc { get; set; }  // The current enemy gameobject.
     protected EnemyController enemy { get; set; }
-    protected PlayerManager player { get; set; }
+    protected PlayerMovement_2 player { get; set; }
     protected NavMeshAgent agent { get; set; }
     protected EnemyState nextState { get; set; }
 
-    public EnemyState(GameObject npc, EnemyController enemy, NavMeshAgent agent, PlayerManager player) {
+    public EnemyState(GameObject npc, EnemyController enemy, NavMeshAgent agent, PlayerMovement_2 player) {
 
         this.npc = npc;
         this.enemy = enemy;

@@ -11,7 +11,7 @@ public class EnemyIdle : EnemyState {
     private float _currentIdleTime = 3f;
     private float _maxIdleTime = 3f;
 
-    public EnemyIdle(GameObject npc, EnemyController enemy, NavMeshAgent agent, PlayerManager player) : base(npc, enemy, agent, player) {
+    public EnemyIdle(GameObject npc, EnemyController enemy, NavMeshAgent agent, PlayerMovement_2 player) : base(npc, enemy, agent, player) {
 
         currentState = STATE.Idle;
     }

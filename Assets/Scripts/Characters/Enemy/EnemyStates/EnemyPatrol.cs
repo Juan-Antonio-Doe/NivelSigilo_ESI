@@ -10,7 +10,7 @@ public class EnemyPatrol : EnemyState {
 
     private int _lastWaypointIndex = 0;
 
-    public EnemyPatrol(GameObject npc, EnemyController enemy, NavMeshAgent agent, PlayerManager player) : base(npc, enemy, agent, player) {
+    public EnemyPatrol(GameObject npc, EnemyController enemy, NavMeshAgent agent, PlayerMovement_2 player) : base(npc, enemy, agent, player) {
 
         currentState = STATE.Patrol;
         agent.speed = 4f;

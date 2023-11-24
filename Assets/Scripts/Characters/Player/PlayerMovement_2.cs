@@ -18,7 +18,7 @@ public class PlayerMovement_2 : MonoBehaviour {
 
     [field: Header("Camara settings")]
     [field: Range(1, 10)]
-    [field: SerializeField] private float mouseSensitivity { get; set; } = 3;
+    [field: SerializeField] private float mouseSensitivity { get; set; } = 3f;
     [field: SerializeField] private Transform followTransform { get; set; }
 
     // Opciones para invertir el giro de la cmara.
@@ -46,6 +46,9 @@ public class PlayerMovement_2 : MonoBehaviour {
 
     void FixedUpdate() {
         MovePlayer();
+    }
+
+    private void LateUpdate() {
         Rotation();
     }
 
@@ -90,12 +93,14 @@ public class PlayerMovement_2 : MonoBehaviour {
         // Player rotation
         //transform.rotation *= Quaternion.AngleAxis(mouseInput.x * mouseSensitivity, Vector3.up);
 
-        // Rotamos al personaje segn gira el ratn.
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x * mouseSensitivity,
+        float halfMouseSensitivity = mouseSensitivity / 2;
+
+        // Rotamos al personaje según gira el ratón.
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x * halfMouseSensitivity,
         transform.rotation.eulerAngles.z);
 
         // Camera vertical rotation
-        followTransform.rotation *= Quaternion.AngleAxis(mouseInput.y * mouseSensitivity, Vector3.right);
+        followTransform.rotation *= Quaternion.AngleAxis(mouseInput.y * halfMouseSensitivity, Vector3.right);
 
         Vector3 angles = followTransform.localEulerAngles;
         angles.z = 0;
@@ -114,26 +119,6 @@ public class PlayerMovement_2 : MonoBehaviour {
         // Reset the y rotation of the look transform
         followTransform.localEulerAngles = new Vector3(angles.x, 0, 0);
     }
-
-    /*void CameraRotation() {
-
-        // Aqui se modifica el movimiento sobre los ejes segn los gustos del jugador.
-        if (invertX) {
-            mouseInput.x = -mouseInput.x;
-        }
-        if (invertY) {
-            mouseInput.y = -mouseInput.y;
-        }
-
-        // Rotamos al personaje segn gira el ratn.
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x * mouseSensitivity,
-        transform.rotation.eulerAngles.z);
-
-        // Rotamos la cmara segn gira el ratn. El Mathf.Clamp se usa para ajustar un lmite de movimiento en el eje X de la rotacin de la cmara.
-        followTransform.rotation = Quaternion.Euler(Mathf.Clamp(followTransform.rotation.eulerAngles.x + (mouseInput.y), 0f, 40f),
-            followTransform.rotation.eulerAngles.y, followTransform.rotation.eulerAngles.z);
-
-    }*/
 
     void ControlDrag() {
         rb.drag = rbDrag;

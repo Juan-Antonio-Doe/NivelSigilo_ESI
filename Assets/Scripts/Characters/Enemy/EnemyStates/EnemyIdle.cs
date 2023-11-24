@@ -16,18 +16,24 @@ public class EnemyIdle : EnemyState {
         currentState = STATE.Idle;
     }
 
-    public override void Enter() {
-        /*if (enemy.Waypoints.Count > 0) {    // If the enemy has waypoints, switch to the patrol state.
-            nextState = new EnemyPatrol(npc, enemy, agent, player);
+    public override void Update() {
+
+        // If the drone raises the alert or the player is detected, switch to alert state.
+        if (OnAlert() || IndividualPlayerDectection()) {
+            nextState = new EnemyAlert(npc, enemy, agent, player);
 
             stage = STAGES.Exit;
             return;
-        }*/
+        }
 
-        base.Enter();
-    }
+        // If the enemy is distracted, switch to distracted state.
+        if (enemy.IsDistracted) {
+            nextState = new EnemyDistracted(npc, enemy, agent, player);
 
-    public override void Update() {
+            stage = STAGES.Exit;
+            return;
+        }
+
         // When idleTime is over, switch to patrol state.
         if (_currentIdleTime <= 0 && enemy.Waypoints.Count > 0) {
             nextState = new EnemyPatrol(npc, enemy, agent, player);

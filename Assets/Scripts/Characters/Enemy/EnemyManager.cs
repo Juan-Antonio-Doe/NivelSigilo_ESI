@@ -11,7 +11,23 @@ public class EnemyManager : MonoBehaviour {
     [field: SerializeField, FindObjectOfType, ReadOnlyField] public PlayerMovement_2 player { get; private set; }
     [field: SerializeField, FindObjectOfType, ReadOnlyField] private LevelManager levelManager { get; set; }
 
+    [field: Header("Alert feedback")]
+    [field: SerializeField] private Light directionalLight { get; set; }
+    [field: SerializeField] private Color alertColor { get; set; } = Color.red;
+
     // Used for alert to others enemies.
+    [field: Header("Debug")]
+    [field: SerializeField, ReadOnlyField] private bool _droneAlert { get; set; }
+    public bool DroneAlert {
+        get => _droneAlert; 
+        
+        set {
+            _droneAlert = value;
+
+            if (value)
+                directionalLight.color = alertColor;
+        }
+    }
     [field: SerializeField, ReadOnlyField] private bool _playerDetected { get; set; }
     public bool PlayerDetected { get { return _playerDetected; } 
         set { 
@@ -40,5 +56,8 @@ public class EnemyManager : MonoBehaviour {
         // Get all the waypoints in the scene in a simplified way.
         if (allWaypoints.Count == 0)
             allWaypoints = GameObject.FindGameObjectsWithTag("enemyWaypoint").Select(x => x.transform).ToList();
+
+        if (directionalLight == null)
+            directionalLight = GameObject.Find("Directional Light").GetComponent<Light>();
     }
 }

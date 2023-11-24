@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 2658744814702576580}
   - component: {fileID: 8352000912431720056}
   - component: {fileID: 8681319128016363705}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: EnemyGuard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <_agent>k__BackingField: {fileID: 2477090987823071779}
   <enemies>k__BackingField: {fileID: 0}
+  <visionCone>k__BackingField: {fileID: 8580699392559426557}
   <_capsuleCollider>k__BackingField: {fileID: 2658744814702576580}
   <waypointsParent>k__BackingField: {fileID: 0}
   waypoints: []
@@ -64,6 +65,7 @@ MonoBehaviour:
   soundDetectionRadius: 4
   detectPlayerByProximity: 0
   proximityDetectionRadius: 2
+  <distractedTime>k__BackingField: 3
 --- !u!114 &8580699392559426557
 MonoBehaviour:
   m_ObjectHideFlags: 0

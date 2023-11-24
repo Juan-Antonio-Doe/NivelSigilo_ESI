@@ -32,21 +32,31 @@ public class EnemyPatrol : EnemyState {
 
     public override void Update() {
 
+        // If the drone raises the alert or the player is detected, switch to alert state.
+        if (OnAlert() || IndividualPlayerDectection()) {
+            nextState = new EnemyAlert(npc, enemy, agent, player);
+
+            stage = STAGES.Exit;
+            return;
+        }
+
+        // If the enemy is distracted, switch to distracted state.
+        if (enemy.IsDistracted) {
+            nextState = new EnemyDistracted(npc, enemy, agent, player);
+
+            stage = STAGES.Exit;
+            return;
+        }
+
         // If we've reached the destination
         if (!agent.pathPending && agent.remainingDistance < agent.stoppingDistance) {
             // If we are going to stop in each waypoint, we will change the state to idle.
             if (enemy.StopInEachWaypoint) {
-                nextState = new EnemyIdle(npc, enemy, agent, player);
-
-                stage = STAGES.Exit;
+                ExitToIdle();
                 return;
             }
             else {
-                if (enemy.StopInEachWaypoint) {
-                    ExitToIdle();
-                    return;
-                }
-                else if (enemy.WaypointsToStop != null && enemy.WaypointsToStop.Length > 0) {
+                if (enemy.WaypointsToStop != null && enemy.WaypointsToStop.Length > 0) {
                     // When we reach at specific waypoint, we will change to idle state.
                     if (Array.Exists(enemy.WaypointsToStop, element => element == _lastWaypointIndex + 1)) {
                         ExitToIdle();

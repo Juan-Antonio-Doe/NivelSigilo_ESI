@@ -8,8 +8,10 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour {
 
     [field: Header("AutoAttach on Editor properties")]
-    [field: SerializeField, GetComponent] private NavMeshAgent _agent { get; set; }
-    [field: SerializeField, FindObjectOfType] public EnemyManager enemies { get; private set; }
+    [field: SerializeField, GetComponent, ReadOnlyField] private NavMeshAgent _agent { get; set; }
+    [field: SerializeField, FindObjectOfType, ReadOnlyField] public EnemyManager enemies { get; private set; }
+    [field: SerializeField, GetComponent, ReadOnlyField] private VisionCone visionCone { get; set; }
+    public VisionCone VisionCone { get { return visionCone; } }
 
     [field: SerializeField, GetComponent] private CapsuleCollider _capsuleCollider { get; set; }
     public CapsuleCollider CapsuleCollider { get { return _capsuleCollider; } }
@@ -86,6 +88,15 @@ public class EnemyController : MonoBehaviour {
     public bool DetectPlayerByProximity { get { return detectPlayerByProximity; } }
     [field: SerializeField] private float proximityDetectionRadius;
     public float ProximityDetectionRadius { get { return proximityDetectionRadius; } }
+
+    [field: Header("Distracted properties")]
+    [field: SerializeField] private float distractedTime { get; set; } = 5f;
+    public float DistractedTime { get { return distractedTime; } }
+
+    [field: SerializeField, ReadOnlyField] private bool _isDistracted { get; set; }
+    public bool IsDistracted { get { return _isDistracted; } set { _isDistracted = value; } }
+    private Vector3 _distractedPosition;
+    public Vector3 DistractedPosition { get { return _distractedPosition; } set { _distractedPosition = value; } }
 
     void Start() {
 

@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - enemyWaypoint
+  - distraction
+  - EnemyGuard
   layers:
   - Default
   - TransparentFX

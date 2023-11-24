@@ -9,8 +9,8 @@ public class EnemyState {
     public enum STATE {
         Idle,           // This is the paused state.
         Patrol,         // Enemy is patrolling through the waypoints.
-        Look,           // Enemy is looking for the player. After an alert (camera or corpse detected, after a chase).
-        Investigate,    // Enemy is investigating the last player position detected by a camera.
+        Alert,          // Enemy is looking for the player.
+        Distracted,     // Enemy is distracted by a sound.
     }
 
     public enum STAGES {
@@ -63,7 +63,15 @@ public class EnemyState {
         return this;
     }
 
-    public bool CanSeePlayer() {
+    public bool PlayerDetected() {
         return enemy.enemies.PlayerDetected;
+    }
+
+    public bool OnAlert() {
+        return enemy.enemies.DroneAlert;
+    }
+    
+    public bool IndividualPlayerDectection() {
+        return enemy.VisionCone.PlayerDetected;
     }
 }

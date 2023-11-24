@@ -17,6 +17,7 @@ public class LevelManager : MonoBehaviour {
     [field: SerializeField] private Image gameOverPanel { get; set; }
     [field: SerializeField] private Text gameOverText { get; set; }
 
+    private bool gameEnded { get; set; }
 
     void Start() {
         victoryPanel.color = new Color(victoryPanel.color.r, victoryPanel.color.g, victoryPanel.color.b, 0);
@@ -27,6 +28,12 @@ public class LevelManager : MonoBehaviour {
         gameOverPanel.gameObject.SetActive(false);
         gameOverText.color = new Color(gameOverText.color.r, gameOverText.color.g, gameOverText.color.b, 0);
         gameOverText.gameObject.SetActive(false);
+
+#if !UNITY_EDITOR
+        // Mouse cursor is locked and invisible.
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+#endif
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -37,10 +44,14 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void EndGame() {
+        if (gameEnded) 
+            return;
+
         StartCoroutine(ShowEndPanelCo());
     }
 
     IEnumerator ShowEndPanelCo() {
+        gameEnded = true;
         playerInputs.DeactivateInput();
 
         if (isVictory) {

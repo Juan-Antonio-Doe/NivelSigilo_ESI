@@ -79,6 +79,12 @@ public class PlayerMovement_2 : MonoBehaviour {
             currentMoveSpeed /= 2;
 
         rb.AddForce(moveDirection.normalized * currentMoveSpeed * movementMultiplier, ForceMode.Acceleration);
+
+        float halfMouseSensitivity = mouseSensitivity / 2;
+
+        // Rotamos al personaje según gira el ratón.
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x * halfMouseSensitivity,
+        transform.rotation.eulerAngles.z);
     }
 
     void Rotation() {
@@ -95,9 +101,9 @@ public class PlayerMovement_2 : MonoBehaviour {
 
         float halfMouseSensitivity = mouseSensitivity / 2;
 
-        // Rotamos al personaje según gira el ratón.
+        /*// Rotamos al personaje según gira el ratón.
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x * halfMouseSensitivity,
-        transform.rotation.eulerAngles.z);
+        transform.rotation.eulerAngles.z);*/
 
         // Camera vertical rotation
         followTransform.rotation *= Quaternion.AngleAxis(mouseInput.y * halfMouseSensitivity, Vector3.right);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour {
@@ -76,6 +77,8 @@ public class LevelManager : MonoBehaviour {
         }
 
         yield return new WaitForSeconds(5f);
-        Application.Quit();
+
+        // Restart the level
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

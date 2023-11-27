@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Nivel_Sigilo.unity
+    guid: fab266b7420480b4b86b312888828fc0
   m_configObjects: {}

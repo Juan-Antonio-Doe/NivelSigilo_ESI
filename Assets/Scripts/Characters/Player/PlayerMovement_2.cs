@@ -15,6 +15,8 @@ public class PlayerMovement_2 : MonoBehaviour {
     [field: SerializeField] private float movementMultiplier { get; set; } = 10f;
     [field: SerializeField, ReadOnlyField] private bool isSneaking { get; set; }
     public bool IsSneaking { get => isSneaking; }
+    [field: SerializeField, ReadOnlyField] private bool isMoving { get; set; }
+    public bool IsMoving { get => isMoving; }
 
     [field: Header("Camara settings")]
     [field: Range(1, 10)]
@@ -42,6 +44,7 @@ public class PlayerMovement_2 : MonoBehaviour {
 
     void Update() {
         ControlDrag();
+        isMoving = horizontalMovement != 0 || verticalMovement != 0;
     }
 
     void FixedUpdate() {

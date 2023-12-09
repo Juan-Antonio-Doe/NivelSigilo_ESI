@@ -232,7 +232,7 @@ public class VisionCone : MonoBehaviour {
     private void OnTriggerStay(Collider other) {
         if (other.GetType() != typeof(SphereCollider)) {
             // This Ifs can be checked with the script disabled.
-            if (enemyController.DetectPlayerBySound && !enemies.player.IsSneaking) {
+            if (enemyController.DetectPlayerBySound && !enemies.player.IsSneaking && enemies.player.IsMoving) {
                 if (other.CompareTag("Player")) {
                     if (Vector3.Distance(transform.position, enemies.player.transform.position) <= enemyController.SoundDetectionRadius) {
                         PlayerDetection(true);
